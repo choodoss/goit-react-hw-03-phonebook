@@ -6,15 +6,13 @@ import Form from '../Form/Form'
 import Search from '../Search/Search'
 import List from '../List/LIst'
 
-const inputIdName = generateId()
-const inputIdNTel = generateId()
 const inputIdFilter = generateId()
 
 class App extends Component {
   state = {
     contacts: [],
-    name: '',
-    number: '',
+    // name: '',
+    // number: '',
     filter: '',
   };
 
@@ -37,6 +35,12 @@ class App extends Component {
     this.setState({ contacts: [...this.state.contacts, ...defaultData] })
   };
 
+  hendleContactRemove = ({ currentTarget: { id } }) => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id)
+    }));
+  }
+
   hendleSubmitForm = (e) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
@@ -48,30 +52,17 @@ class App extends Component {
     this.setState({ contacts: [...this.state.contacts, { id: generateId(), name: formData.get('name'), phone: formData.get('number') }], name: '', number: '' })
   };
 
-  hendleInput = ({ currentTarget: { value, name } }) => {
-    this.setState({ [name]: value });
-  };
-
-  hendleContactRemove = ({ currentTarget: { id } }) => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== id)
-    }));
-  }
-
   render() {
-    const name = this.state.name;
+    const hendleSubmitForm = this.hendleSubmitForm;
     const getFilterContacts = this.getFilterContacts();
-    const number = this.state.number;
     const filter = this.state.filter;
-    const hendleSubmitFormProp = this.hendleSubmitForm;
-    const hendleInputProp = this.hendleInput;
     const hendleFilterProp = this.hendleFilter;
-    const hendleContactRemoveProp = this.hendleContactRemove
+    const hendleContactRemoveProp = this.hendleContactRemove;
 
     const app =
       <AppCont>
         <h1>Phonebook</h1>
-        <Form hendleSubmitFormProp={hendleSubmitFormProp} hendleInputProp={hendleInputProp} name={name} number={number} inputIdName={inputIdName} inputIdNTel={inputIdNTel} />
+        <Form hendleSubmitForm={hendleSubmitForm} />
         <h2>Contact</h2>
         <Search hendleFilterProp={hendleFilterProp} inputIdFilter={inputIdFilter} filter={filter} />
         <List getFilterContacts={getFilterContacts} hendleContactRemoveProp={hendleContactRemoveProp} />
@@ -81,3 +72,5 @@ class App extends Component {
 }
 
 export default App;
+
+
