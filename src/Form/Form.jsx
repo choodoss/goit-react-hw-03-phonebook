@@ -16,13 +16,19 @@ class Form extends Component {
         this.setState({ [name]: value });
     };
 
+    hendleSubmitForm = e => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        this.props.onSubmit(formData);
+        this.setState({ name: '', number: '' });
+    };
+
     render() {
-        const hendleSubmitForm = this.props.hendleSubmitForm;
         const hendleInput = this.hendleInput;
-        const { name, number } = this.state.name;
+        const { name, number } = this.state;
 
         const form =
-            <FormSection onSubmit={hendleSubmitForm}>
+            <FormSection onSubmit={this.hendleSubmitForm}>
                 <Label htmlFor={inputIdName}>Name</Label>
                 <Input id={inputIdName}
                     onChange={hendleInput}

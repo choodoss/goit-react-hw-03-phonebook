@@ -11,8 +11,6 @@ const inputIdFilter = generateId()
 class App extends Component {
   state = {
     contacts: [],
-    // name: '',
-    // number: '',
     filter: '',
   };
 
@@ -41,19 +39,18 @@ class App extends Component {
     }));
   }
 
-  hendleSubmitForm = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
+  SubmitFormhendler = (formData) => {
     const findeErr = this.state.contacts.find(contact => contact.name === formData.get('name'))
     if (findeErr) {
       alert('вийди звідси розбійник')
       return
     }
-    this.setState({ contacts: [...this.state.contacts, { id: generateId(), name: formData.get('name'), phone: formData.get('number') }], name: '', number: '' })
+    this.setState({ contacts: [...this.state.contacts, { id: generateId(), name: formData.get('name'), phone: formData.get('number') }] })
   };
 
+
   render() {
-    const hendleSubmitForm = this.hendleSubmitForm;
+    const SubmitFormhendler = this.SubmitFormhendler;
     const getFilterContacts = this.getFilterContacts();
     const filter = this.state.filter;
     const hendleFilterProp = this.hendleFilter;
@@ -62,7 +59,7 @@ class App extends Component {
     const app =
       <AppCont>
         <h1>Phonebook</h1>
-        <Form hendleSubmitForm={hendleSubmitForm} />
+        <Form onSubmit={SubmitFormhendler} />
         <h2>Contact</h2>
         <Search hendleFilterProp={hendleFilterProp} inputIdFilter={inputIdFilter} filter={filter} />
         <List getFilterContacts={getFilterContacts} hendleContactRemoveProp={hendleContactRemoveProp} />
