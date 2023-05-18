@@ -1,12 +1,13 @@
 import { Component } from 'react';
 import { AppCont } from './App.styled'
 import generateId from '../tools/idRandomize'
-import defaultData from '../tools/defaultData'
 import Form from '../Form/Form'
 import Search from '../Search/Search'
 import List from '../List/LIst'
 
 const inputIdFilter = generateId()
+
+const KEY = "Contact-List";
 
 class App extends Component {
   state = {
@@ -15,12 +16,18 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.runDefaultData();
+    const localData = localStorage.getItem(KEY);
+    if (localData) {
+      this.setState({ contacts: JSON.parse(localData) });
+    }
+  };
+
+  componentDidUpdate() {
+    localStorage.setItem(KEY, JSON.stringify(this.state.contacts));
   };
 
   hendleFilter = ({ currentTarget: { value } }) => {
     this.setState({ filter: value });
-
   };
 
   getFilterContacts = () => {
@@ -29,23 +36,20 @@ class App extends Component {
     );
   };
 
-  runDefaultData = () => {
-    this.setState({ contacts: [...this.state.contacts, ...defaultData] })
-  };
-
   hendleContactRemove = ({ currentTarget: { id } }) => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== id)
     }));
-  }
+  };
 
   SubmitFormhendler = (formData) => {
-    const findeErr = this.state.contacts.find(contact => contact.name === formData.get('name'))
+    const findeErr = this.state.contacts.find(contact => contact.name.toLowerCase() === formData.get('name').toLowerCase())
     if (findeErr) {
-      alert('вийди звідси розбійник')
+      alert('вийди звідси розбійник');
       return
     }
-    this.setState({ contacts: [...this.state.contacts, { id: generateId(), name: formData.get('name'), phone: formData.get('number') }] })
+    this.setState({ contacts: [...this.state.contacts, { id: generateId(), name: formData.get('name'), phone: formData.get('number') }] });
+
   };
 
 
@@ -66,7 +70,7 @@ class App extends Component {
       </AppCont>
     return app;
   };
-}
+};
 
 export default App;
 
